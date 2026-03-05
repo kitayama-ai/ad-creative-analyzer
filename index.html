@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ad Creative Analyzer | すっぽん小町 広告分析ダッシュボード</title>
+    <meta
+      name="description"
+      content="Google Sheets連携の広告クリエイティブ分析ダッシュボード。ルッカースタジオより軽量で自由度の高い多角的分析。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <p class="loading-text">データを読み込んでいます...</p>
+        <p class="loading-sub" id="loading-status"></p>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="logo-title">Ad Analyzer</span>
+            <span class="logo-subtitle">Creative Intelligence</span>
+          </div>
+        </div>
+        <button
+          id="sidebar-toggle"
+          class="sidebar-toggle"
+          aria-label="Toggle sidebar"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="overview">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          <span>概要</span>
+        </a>
+        <a href="#" class="nav-item" data-section="creative">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="M21 15l-5-5L5 21" />
+          </svg>
+          <span>クリエイティブ分析</span>
+        </a>
+        <a href="#" class="nav-item" data-section="lp">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            />
+            <path d="M14 2v6h6" />
+          </svg>
+          <span>LP分析</span>
+        </a>
+        <a href="#" class="nav-item" data-section="targeting">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+          </svg>
+          <span>ターゲティング分析</span>
+        </a>
+        <a href="#" class="nav-item" data-section="cross">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M16 3h5v5" />
+            <path d="M8 3H3v5" />
+            <path d="M12 22v-8.5" />
+            <path d="M21 3l-9 9" />
+            <path d="M3 3l9 9" />
+          </svg>
+          <span>クロス分析</span>
+        </a>
+        <a href="#" class="nav-item" data-section="trend">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+          <span>トレンド分析</span>
+        </a>
+        <a href="#" class="nav-item" data-section="text">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            />
+            <path d="M14 2v6h6" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <line x1="10" y1="9" x2="8" y2="9" />
+          </svg>
+          <span>テキスト分析</span>
+        </a>
+        <a href="#" class="nav-item" data-section="combo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <line x1="10" y1="6.5" x2="14" y2="6.5" stroke-dasharray="2" />
+            <line x1="10" y1="17.5" x2="14" y2="17.5" stroke-dasharray="2" />
+          </svg>
+          <span>掛け合わせ効果</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="data-status" id="data-status">
+          <div class="status-dot offline"></div>
+          <span>データ未接続</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button
+            id="mobile-menu-btn"
+            class="mobile-menu-btn"
+            aria-label="Menu"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <h1 id="page-title" class="page-title">概要ダッシュボード</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="filter-group">
+            <select id="filter-month" class="filter-select">
+              <option value="all">全期間</option>
+            </select>
+            <div style="display:flex;align-items:center;gap:4px">
+              <input type="date" id="filter-date-start" class="filter-select" style="font-size:12px;padding:4px 6px;width:130px" title="開始日" />
+              <span style="color:var(--text-tertiary);font-size:12px">〜</span>
+              <input type="date" id="filter-date-end" class="filter-select" style="font-size:12px;padding:4px 6px;width:130px" title="終了日" />
+            </div>
+            <select id="filter-operation" class="filter-select">
+              <option value="all">全運用</option>
+              <option value="自社運用">自社運用</option>
+            </select>
+          </div>
+          <button
+            id="export-csv-btn"
+            class="btn btn-export"
+            onclick="exportCurrentSection()"
+            title="現在のセクションのデータをCSV出力（集計＋ローデータ）"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>CSV出力</span>
+          </button>
+          <button
+            id="connect-btn"
+            class="btn btn-primary"
+            onclick="showDataModal()"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="16"
+              height="16"
+            >
+              <path
+                d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+              />
+              <path
+                d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+              />
+            </svg>
+            <span>データ接続</span>
+          </button>
+          <button
+            id="disconnect-btn"
+            class="btn"
+            onclick="disconnectData()"
+            style="display:none;font-size:12px;padding:6px 12px;background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.3)"
+          >
+            連携解除
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="content-area" id="content-area">
+        <!-- Welcome Section (shown when no data) -->
+        <section id="welcome-section" class="welcome-section">
+          <div class="welcome-card">
+            <div class="welcome-icon">
+              <svg viewBox="0 0 80 80" fill="none">
+                <defs>
+                  <linearGradient id="wg" x1="0" y1="0" x2="80" y2="80">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#a855f7" />
+                  </linearGradient>
+                </defs>
+                <rect
+                  x="8"
+                  y="8"
+                  width="64"
+                  height="64"
+                  rx="16"
+                  fill="url(#wg)"
+                  opacity="0.15"
+                />
+                <path
+                  d="M30 50V35M40 50V25M50 50V30M25 55h30"
+                  stroke="url(#wg)"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <h2>Ad Creative Analyzer へようこそ</h2>
+            <p>
+              Google スプレッドシートの広告データを接続して、<br />クリエイティブの多角的分析を始めましょう。
+            </p>
+            <div class="welcome-actions">
+              <button class="btn btn-primary btn-lg" onclick="showDataModal()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="20"
+                  height="20"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                CSVをアップロード
+              </button>
+              <button class="btn btn-secondary btn-lg" onclick="loadDemoData()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="20"
+                  height="20"
+                >
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                デモデータで試す
+              </button>
+            </div>
+            <div class="welcome-features">
+              <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <h4>超軽量</h4>
+                <p>ルッカースタジオの<br />10倍速い表示</p>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">🎨</div>
+                <h4>クリエイティブ特化</h4>
+                <p>クリエイター別・訴求別<br />バナータイプ別分析</p>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <h4>クロス分析</h4>
+                <p>LP×ターゲティング×訴求<br />の掛け合わせ分析</p>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h4>トレンド分析</h4>
+                <p>LP疲弊の自動検知<br />月次推移の可視化</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Overview Section -->
+        <section id="section-overview" class="dashboard-section hidden">
+          <div class="kpi-grid">
+            <div class="kpi-card" id="kpi-cost">
+              <div class="kpi-header">
+                <span class="kpi-label">広告費用</span>
+                <div class="kpi-icon cost">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path
+                      d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-value">¥0</div>
+              <div class="kpi-change neutral">-</div>
+            </div>
+            <div class="kpi-card" id="kpi-cv">
+              <div class="kpi-header">
+                <span class="kpi-label">CV数</span>
+                <div class="kpi-icon cv">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-value">0</div>
+              <div class="kpi-change neutral">-</div>
+            </div>
+            <div class="kpi-card" id="kpi-cpa">
+              <div class="kpi-header">
+                <span class="kpi-label">CPA</span>
+                <div class="kpi-icon cpa">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-value">¥0</div>
+              <div class="kpi-change neutral">-</div>
+            </div>
+            <div class="kpi-card" id="kpi-ctr">
+              <div class="kpi-header">
+                <span class="kpi-label">CTR</span>
+                <div class="kpi-icon ctr">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5" />
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-value">0%</div>
+              <div class="kpi-change neutral">-</div>
+            </div>
+          </div>
+
+          <div class="chart-grid-2">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>月別CPA推移</h3>
+                <div class="chart-actions">
+                  <button
+                    class="chart-btn active"
+                    data-metric="cpa"
+                    onclick="switchOverviewChart('cpa')"
+                  >
+                    CPA
+                  </button>
+                  <button
+                    class="chart-btn"
+                    data-metric="cv"
+                    onclick="switchOverviewChart('cv')"
+                  >
+                    CV
+                  </button>
+                  <button
+                    class="chart-btn"
+                    data-metric="cost"
+                    onclick="switchOverviewChart('cost')"
+                  >
+                    費用
+                  </button>
+                </div>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-monthly-trend"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>LP別費用構成比</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-lp-share"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-grid-2">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>バナータイプ別CPA</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-banner-type-cpa"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>ターゲティング別効率</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-targeting-efficiency"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick insights -->
+          <div class="insights-panel">
+            <h3>💡 自動インサイト</h3>
+            <div id="auto-insights" class="insights-list"></div>
+          </div>
+        </section>
+
+        <!-- Creative Analysis Section -->
+        <section id="section-creative" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>🎨 クリエイティブ分析</h2>
+            <p>
+              クリエイター別・バナータイプ別・訴求別のパフォーマンスを多角的に分析
+            </p>
+          </div>
+
+          <div class="chart-grid-2">
+            <div class="chart-card full-width">
+              <div class="chart-header">
+                <h3>クリエイター別パフォーマンス</h3>
+                <div class="chart-actions">
+                  <select
+                    id="creator-sort"
+                    class="filter-select-sm"
+                    onchange="updateCreatorChart()"
+                  >
+                    <option value="cost">費用順</option>
+                    <option value="cpa">CPA順</option>
+                    <option value="cv">CV順</option>
+                    <option value="ctr">CTR順</option>
+                  </select>
+                </div>
+              </div>
+              <div class="chart-body chart-body-tall">
+                <canvas id="chart-creator-perf"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-grid-2">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>バナー訴求別CPA</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-appeal-cpa"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>フォーマット別パフォーマンス</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-format-perf"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Creative ranking table -->
+          <div class="table-card">
+            <div class="table-header">
+              <h3>クリエイティブランキング（個別広告）</h3>
+              <div class="table-actions">
+                <input
+                  type="text"
+                  id="creative-search"
+                  class="search-input"
+                  placeholder="広告テキストで検索..."
+                  oninput="filterCreativeTable()"
+                />
+                <select
+                  id="creative-table-sort"
+                  class="filter-select-sm"
+                  onchange="sortCreativeTable()"
+                >
+                  <option value="cpa-asc">CPA ↑</option>
+                  <option value="cpa-desc">CPA ↓</option>
+                  <option value="cv-desc">CV ↓</option>
+                  <option value="cost-desc">費用 ↓</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table id="creative-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th class="rank-col">#</th>
+                    <th>広告テキスト</th>
+                    <th>LP</th>
+                    <th>ターゲティング</th>
+                    <th class="num-col">費用</th>
+                    <th class="num-col">CV</th>
+                    <th class="num-col">CPA</th>
+                    <th class="num-col">CTR</th>
+                  </tr>
+                </thead>
+                <tbody id="creative-table-body"></tbody>
+              </table>
+            </div>
+            <div class="table-pagination" id="creative-pagination"></div>
+          </div>
+        </section>
+
+        <!-- LP Analysis Section -->
+        <section id="section-lp" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>📄 LP分析</h2>
+            <p>ランディングページ別の効率・月次推移・疲弊検知</p>
+          </div>
+
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>LP別CPA比較（全期間）</h3>
+              <div class="chart-actions">
+                <select
+                  id="lp-metric"
+                  class="filter-select-sm"
+                  onchange="updateLpChart()"
+                >
+                  <option value="cpa">CPA</option>
+                  <option value="cv">CV</option>
+                  <option value="cost">費用</option>
+                  <option value="ctr">CTR</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chart-lp-comparison"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>LP別 月次CPA推移</h3>
+              <div class="chart-actions" id="lp-legend-container"></div>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chart-lp-monthly"></canvas>
+            </div>
+          </div>
+
+          <!-- LP Fatigue Analysis -->
+          <div class="alert-card" id="lp-fatigue-alerts">
+            <h3>⚠️ LP疲弊アラート</h3>
+            <div id="fatigue-list" class="alert-list"></div>
+          </div>
+
+          <!-- LP Data Table -->
+          <div class="table-card">
+            <div class="table-header">
+              <h3>LP別詳細データ</h3>
+            </div>
+            <div class="table-scroll">
+              <table id="lp-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th>LP名</th>
+                    <th class="num-col">費用</th>
+                    <th class="num-col">Imps</th>
+                    <th class="num-col">Clicks</th>
+                    <th class="num-col">CTR</th>
+                    <th class="num-col">CV</th>
+                    <th class="num-col">CPA</th>
+                    <th class="num-col">遷移CPA</th>
+                  </tr>
+                </thead>
+                <tbody id="lp-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Targeting Analysis Section -->
+        <section id="section-targeting" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>🎯 ターゲティング分析</h2>
+            <p>ターゲティング手法別の効率比較と興味関心カテゴリ分析</p>
+          </div>
+
+          <div class="chart-grid-2">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>ターゲティング別CPA・費用</h3>
+              </div>
+              <div class="chart-body">
+                <canvas id="chart-tg-overview"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>興味関心カテゴリ別CPA</h3>
+              </div>
+              <div class="chart-body chart-body-tall">
+                <canvas id="chart-interest-cpa"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-header">
+              <h3>ターゲティング別詳細</h3>
+            </div>
+            <div class="table-scroll">
+              <table id="tg-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th>ターゲティング</th>
+                    <th class="num-col">費用</th>
+                    <th class="num-col">CV</th>
+                    <th class="num-col">CPA</th>
+                    <th class="num-col">CTR</th>
+                    <th class="num-col">遷移</th>
+                    <th class="num-col">遷移CPA</th>
+                  </tr>
+                </thead>
+                <tbody id="tg-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Cross Analysis Section -->
+        <section id="section-cross" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>🔀 クロス分析</h2>
+            <p>
+              LP×ターゲティング、LP×訴求、LP×バナータイプの掛け合わせヒートマップ
+            </p>
+          </div>
+
+          <div class="cross-controls">
+            <label>行軸:</label>
+            <select
+              id="cross-row"
+              class="filter-select"
+              onchange="updateHeatmap()"
+            >
+              <option value="lp">LP</option>
+              <option value="targeting">ターゲティング</option>
+              <option value="appeal">バナー訴求</option>
+              <option value="bannerType">バナータイプ</option>
+              <option value="creator">クリエイター</option>
+            </select>
+            <label>列軸:</label>
+            <select
+              id="cross-col"
+              class="filter-select"
+              onchange="updateHeatmap()"
+            >
+              <option value="targeting">ターゲティング</option>
+              <option value="lp">LP</option>
+              <option value="appeal" selected>バナー訴求</option>
+              <option value="bannerType">バナータイプ</option>
+            </select>
+            <label>指標:</label>
+            <select
+              id="cross-metric"
+              class="filter-select"
+              onchange="updateHeatmap()"
+            >
+              <option value="cpa">CPA</option>
+              <option value="cv">CV</option>
+              <option value="cost">費用</option>
+              <option value="ctr">CTR</option>
+            </select>
+            <label>最低CV:</label>
+            <input
+              type="number"
+              id="cross-min-cv"
+              class="filter-input"
+              value="5"
+              min="1"
+              onchange="updateHeatmap()"
+            />
+          </div>
+
+          <div class="heatmap-container" id="heatmap-container">
+            <div class="heatmap-placeholder">データを接続してください</div>
+          </div>
+        </section>
+
+        <!-- Trend Analysis Section -->
+        <section id="section-trend" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>📈 トレンド分析</h2>
+            <p>構成比変動とCPA悪化の相関、季節性の分析</p>
+          </div>
+
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>月別勝ちLP推移</h3>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chart-monthly-winner"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>配信集中度 vs 翌月CPA変動</h3>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chart-concentration-impact"></canvas>
+            </div>
+          </div>
+
+          <!-- Trend Alerts -->
+          <div class="alert-card">
+            <h3>📊 トレンドインサイト</h3>
+            <div id="trend-insights" class="alert-list"></div>
+          </div>
+        </section>
+
+        <!-- Text Analysis Section -->
+        <section id="section-text" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>📝 テキスト分析</h2>
+            <p>広告テキストのキーワードとCPA相関分析</p>
+          </div>
+
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>キーワード別CPA効率</h3>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chart-keyword-cpa"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-grid-2">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>CPA効率◎ キーワード</h3>
+              </div>
+              <div id="good-keywords" class="keyword-list"></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>CPA効率✕ キーワード</h3>
+              </div>
+              <div id="bad-keywords" class="keyword-list"></div>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-header">
+              <h3>広告テキスト パフォーマンス一覧</h3>
+              <input
+                type="text"
+                id="text-search"
+                class="search-input"
+                placeholder="テキスト内容で検索..."
+                oninput="filterTextTable()"
+              />
+            </div>
+            <div class="table-scroll">
+              <table id="text-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th class="rank-col">#</th>
+                    <th>テキスト冒頭</th>
+                    <th>LP</th>
+                    <th class="num-col">費用</th>
+                    <th class="num-col">CV</th>
+                    <th class="num-col">CPA</th>
+                    <th class="num-col">CTR</th>
+                  </tr>
+                </thead>
+                <tbody id="text-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Combo (Creative x LP) Analysis Section -->
+        <section id="section-combo" class="dashboard-section hidden">
+          <div class="section-intro">
+            <h2>🧩 掛け合わせ効果分析</h2>
+            <p>LP平均CPAからの乖離率でクリエイティブの「純粋な実力」を推定。訴求×LP、タイプ×LPの相性マトリクスを表示。</p>
+          </div>
+
+          <!-- LP Baseline -->
+          <div class="table-card">
+            <div class="table-header">
+              <h3>📊 LP別ベースラインCPA</h3>
+              <span class="table-sub">各LPの全クリエイティブ加重平均CPA（これを基準に乖離率を計算）</span>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead><tr><th>LP名</th><th class="num-col">費用</th><th class="num-col">CV</th><th class="num-col">平均CPA</th><th class="num-col">組み合わせ数</th></tr></thead>
+                <tbody id="combo-lp-baseline-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Appeal x LP Compatibility Matrix -->
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>🟢🔴 訴求 × LP 相性マトリクス</h3>
+              <div class="chart-actions">
+                <label style="color:var(--text-secondary);font-size:12px">最低CV:</label>
+                <input type="number" id="combo-min-cv" class="filter-input" value="5" min="1" onchange="renderCombo()" style="width:60px">
+              </div>
+            </div>
+            <div class="heatmap-container" id="combo-appeal-matrix"></div>
+            <p style="color:var(--text-tertiary);font-size:11px;padding:0 16px 12px">🟢 LP平均より10%以上低CPA（相性◎）　🔴 10%以上高CPA（相性✕）　値 = LP平均CPAからの乖離率(%)</p>
+          </div>
+
+          <!-- Type x LP Compatibility Matrix -->
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <h3>🟢🔴 バナータイプ × LP 相性マトリクス</h3>
+            </div>
+            <div class="heatmap-container" id="combo-type-matrix"></div>
+          </div>
+
+          <!-- Creative Scoring Table -->
+          <div class="table-card">
+            <div class="table-header">
+              <h3>🏆 クリエイティブ実力スコア（LP効果を除去）</h3>
+              <span class="table-sub">2LP以上で展開され、LP平均からの乖離率が安定してマイナスのクリエイティブ = 本物の勝者</span>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead><tr>
+                  <th class="rank-col">#</th><th>広告名</th><th>訴求</th><th>タイプ</th>
+                  <th class="num-col">費用</th><th class="num-col">CV</th><th class="num-col">実CPA</th>
+                  <th class="num-col">LP数</th><th class="num-col">乖離率</th>
+                </tr></thead>
+                <tbody id="combo-score-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Export to Sheets -->
+          <div class="insights-panel">
+            <h3>スプレッドシート出力</h3>
+            <p style="color:var(--text-secondary);margin-bottom:12px">
+              ボタンを押すとクリップボードにコピーされます。スプシを開いてCtrl+V（Cmd+V）で貼り付けてください。
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+              <button class="btn btn-primary" onclick="clipComboMethodology()">
+                計算方法をコピー
+              </button>
+              <button class="btn btn-primary" onclick="clipComboMatrix()">
+                分析表をコピー
+              </button>
+              <button class="btn btn-primary" onclick="clipComboRaw()">
+                rawデータをコピー
+              </button>
+            </div>
+            <div id="clip-status" style="color:var(--accent);font-size:13px;min-height:20px"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Data Connection Modal -->
+    <div id="data-modal" class="modal hidden">
+      <div class="modal-overlay" onclick="hideDataModal()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>データ接続</h2>
+          <button class="modal-close" onclick="hideDataModal()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-tabs">
+            <button
+              class="modal-tab active"
+              data-tab="csv"
+              onclick="switchModalTab('csv')"
+            >
+              CSVアップロード
+            </button>
+            <button
+              class="modal-tab"
+              data-tab="sheets"
+              onclick="switchModalTab('sheets')"
+            >
+              Google Sheets
+            </button>
+            <button
+              class="modal-tab"
+              data-tab="paste"
+              onclick="switchModalTab('paste')"
+            >
+              ペースト
+            </button>
+          </div>
+
+          <div id="tab-csv" class="tab-content active">
+            <div class="upload-zone" id="upload-zone">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="48"
+                height="48"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              <p>CSVファイルをドラッグ＆ドロップ<br />またはクリックして選択</p>
+              <input
+                type="file"
+                id="csv-input"
+                accept=".csv,.tsv,.txt"
+                multiple
+                style="display: none"
+              />
+            </div>
+            <div class="upload-hint">
+              <p>
+                💡 スプレッドシートから「ファイル > ダウンロード >
+                CSV」でエクスポートしてください
+              </p>
+            </div>
+          </div>
+
+          <div id="tab-sheets" class="tab-content hidden">
+            <!-- 連携中の表示 -->
+            <div id="sheets-connected-info" class="hidden" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:16px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="color:#34d399;font-size:18px">●</span>
+                <strong style="color:#34d399">スプシ連携中</strong>
+              </div>
+              <div id="sheets-connected-url" style="color:var(--text-secondary);font-size:12px;word-break:break-all;margin-bottom:8px"></div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-secondary" onclick="refreshSheetsData()" style="font-size:12px;padding:6px 12px">
+                  再読み込み
+                </button>
+                <button class="btn" onclick="disconnectSheets()" style="font-size:12px;padding:6px 12px;background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.3)">
+                  連携解除
+                </button>
+              </div>
+              <div id="sheets-last-sync" style="color:var(--text-tertiary);font-size:11px;margin-top:8px"></div>
+            </div>
+
+            <!-- 新規接続フォーム -->
+            <div id="sheets-connect-form">
+              <div class="form-group">
+                <label>Google Sheets URL</label>
+                <input
+                  type="text"
+                  id="sheets-url"
+                  class="form-input"
+                  placeholder="https://docs.google.com/spreadsheets/d/xxxxx/edit"
+                />
+                <small style="color:var(--text-secondary);margin-top:4px;display:block">
+                  スプシ全体のURLを貼ってください。シート名で対象タブを指定できます。
+                </small>
+              </div>
+              <div class="form-group">
+                <label>シート名（タブ名）</label>
+                <input
+                  type="text"
+                  id="sheets-tab-name"
+                  class="form-input"
+                  placeholder="例: rawデータ （空欄なら最初のシート）"
+                />
+              </div>
+              <div class="form-group">
+                <label>API Key (任意)</label>
+                <input
+                  type="text"
+                  id="sheets-api-key"
+                  class="form-input"
+                  placeholder="AIza..."
+                />
+                <small>公開スプレッドシートの場合はAPI Keyなしでも取得可能</small>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-primary" onclick="connectGoogleSheets()">
+                  接続して連携を開始
+                </button>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-secondary);font-size:13px">
+                  <input type="checkbox" id="sheets-auto-refresh" checked style="accent-color:#6366f1" />
+                  自動更新（5分ごと）
+                </label>
+              </div>
+              <div class="upload-hint" style="margin-top:12px">
+                <p>
+                  手順: スプシで「ファイル → 共有 → ウェブに公開」→ リンクをコピーして上に貼る。<br/>
+                  または単にスプシのURL（/edit のまま）を貼ってもOK。<br/>
+                  連携後はブラウザを閉じても再度開けば自動で再接続します。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-paste" class="tab-content hidden">
+            <div class="form-group">
+              <label>タブ区切りデータを貼り付け</label>
+              <textarea
+                id="paste-data"
+                class="form-textarea"
+                rows="10"
+                placeholder="スプレッドシートからコピーしたデータを貼り付けてください..."
+              ></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="processPastedData()">
+              読み込み
+            </button>
+          </div>
+        </div>
+
+        <!-- Column Mapping (shown after data load) -->
+        <div id="column-mapping" class="column-mapping hidden">
+          <h3>カラムマッピング</h3>
+          <p>データの列と分析項目を紐付けてください</p>
+          <div id="mapping-fields" class="mapping-grid"></div>
+          <button class="btn btn-primary" onclick="applyMapping()">
+            分析開始
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -3,8 +3,6 @@
    すっぽん小町 ブランドカラー対応
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
-
 :root {
   /* Colors - Warm Dark Theme (すっぽん小町) */
   --bg-primary: #0f0d0b;
@@ -23,13 +21,13 @@
   --border-color: rgba(255, 235, 215, 0.08);
   --border-hover: rgba(255, 235, 215, 0.15);
 
-  /* Accent Colors - コーラルピンク (すっぽん小町ブランド) */
-  --accent-primary: #e88c7a;
-  --accent-primary-hover: #f0a494;
-  --accent-primary-bg: rgba(232, 140, 122, 0.12);
-  --accent-secondary: #d4956a;
-  --accent-gradient: linear-gradient(135deg, #e88c7a, #d4956a);
-  --accent-gradient-hover: linear-gradient(135deg, #f0a494, #e0a87e);
+  /* Accent Colors - 薄ピンク (すっぽん小町ブランド) */
+  --accent-primary: #e8b4b8;
+  --accent-primary-hover: #f0c8cc;
+  --accent-primary-bg: rgba(232, 180, 184, 0.12);
+  --accent-secondary: #d4a8a0;
+  --accent-gradient: linear-gradient(135deg, #e8b4b8, #d4a8a0);
+  --accent-gradient-hover: linear-gradient(135deg, #f0c8cc, #e0b8b0);
 
   /* Status Colors */
   --color-success: #7dbd8a;
@@ -41,17 +39,17 @@
   --color-info: #7ab8d4;
   --color-info-bg: rgba(122, 184, 212, 0.1);
 
-  /* Chart Colors - 暖色系パレット */
-  --chart-1: #e88c7a;
-  --chart-2: #d4956a;
-  --chart-3: #c97b8a;
-  --chart-4: #e8b86a;
-  --chart-5: #b8a060;
-  --chart-6: #7ab8d4;
-  --chart-7: #7dbd8a;
-  --chart-8: #e07a7a;
-  --chart-9: #c4a888;
-  --chart-10: #a89078;
+  /* Chart Colors - ソフトパレット */
+  --chart-1: #e8b4b8;
+  --chart-2: #d4a8a0;
+  --chart-3: #c9a0b0;
+  --chart-4: #e8c8a0;
+  --chart-5: #b8b090;
+  --chart-6: #a0c8d4;
+  --chart-7: #a0c8a8;
+  --chart-8: #d4a0a0;
+  --chart-9: #c4b8a8;
+  --chart-10: #b8a898;
 
   /* Layout */
   --sidebar-width: 260px;
@@ -65,7 +63,7 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 30px rgba(232, 140, 122, 0.15);
+  --shadow-glow: 0 0 30px rgba(232, 180, 184, 0.15);
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -236,7 +234,6 @@ body {
 }
 
 .logo-title {
-  font-family: 'Noto Serif JP', serif;
   font-size: 1.1rem;
   font-weight: 700;
   background: var(--accent-gradient);
@@ -413,10 +410,9 @@ body {
 }
 
 .page-title {
-  font-family: 'Noto Serif JP', serif;
   font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .topbar-right {
@@ -586,10 +582,9 @@ body {
 }
 
 .welcome-card h2 {
-  font-family: 'Noto Serif JP', serif;
   font-size: 2rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   margin-bottom: 12px;
   background: var(--accent-gradient);
   -webkit-background-clip: text;

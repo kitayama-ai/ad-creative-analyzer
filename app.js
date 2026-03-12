@@ -35,7 +35,7 @@ const COL_MAP = {
   bannerTarget: 'バナーターゲット',
 };
 
-const COLORS = ['#e88c7a','#d4956a','#c97b8a','#e8b86a','#b8a060','#7ab8d4','#7dbd8a','#e07a7a','#c4a888','#a89078','#d4a07a','#8db88a','#8aafb8','#c9887a','#e0c07a'];
+const COLORS = ['#e8b4b8','#d4a8a0','#c9a0b0','#e8c8a0','#b8b090','#a0c8d4','#a0c8a8','#d4a0a0','#c4b8a8','#b8a898','#d4b0a0','#a8c8a0','#a0b8c8','#c4a0a8','#e0c8a0'];
 
 // ============================================
 // Initialization

@@ -1,54 +1,57 @@
 /* ============================================
    Ad Creative Analyzer - Design System
+   すっぽん小町 ブランドカラー対応
    ============================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+
 :root {
-  /* Colors - Dark Theme */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-tertiary: #1a1a2e;
-  --bg-card: #16162a;
-  --bg-card-hover: #1e1e38;
-  --bg-elevated: #20203a;
-  --bg-input: #1a1a30;
+  /* Colors - Warm Dark Theme (すっぽん小町) */
+  --bg-primary: #0f0d0b;
+  --bg-secondary: #171412;
+  --bg-tertiary: #221e1a;
+  --bg-card: #1c1815;
+  --bg-card-hover: #2a2420;
+  --bg-elevated: #2e2824;
+  --bg-input: #1e1a16;
 
-  --text-primary: #e8e8f0;
-  --text-secondary: #a0a0b8;
-  --text-tertiary: #6a6a80;
-  --text-accent: #b4b4d0;
+  --text-primary: #f0ebe6;
+  --text-secondary: #b8a99a;
+  --text-tertiary: #7a6e62;
+  --text-accent: #d4c4b4;
 
-  --border-color: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 255, 255, 0.12);
+  --border-color: rgba(255, 235, 215, 0.08);
+  --border-hover: rgba(255, 235, 215, 0.15);
 
-  /* Accent Colors */
-  --accent-primary: #6366f1;
-  --accent-primary-hover: #818cf8;
-  --accent-primary-bg: rgba(99, 102, 241, 0.1);
-  --accent-secondary: #a855f7;
-  --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7);
-  --accent-gradient-hover: linear-gradient(135deg, #818cf8, #c084fc);
+  /* Accent Colors - コーラルピンク (すっぽん小町ブランド) */
+  --accent-primary: #e88c7a;
+  --accent-primary-hover: #f0a494;
+  --accent-primary-bg: rgba(232, 140, 122, 0.12);
+  --accent-secondary: #d4956a;
+  --accent-gradient: linear-gradient(135deg, #e88c7a, #d4956a);
+  --accent-gradient-hover: linear-gradient(135deg, #f0a494, #e0a87e);
 
   /* Status Colors */
-  --color-success: #34d399;
-  --color-success-bg: rgba(52, 211, 153, 0.1);
-  --color-warning: #fbbf24;
-  --color-warning-bg: rgba(251, 191, 36, 0.1);
-  --color-danger: #f87171;
-  --color-danger-bg: rgba(248, 113, 113, 0.1);
-  --color-info: #60a5fa;
-  --color-info-bg: rgba(96, 165, 250, 0.1);
+  --color-success: #7dbd8a;
+  --color-success-bg: rgba(125, 189, 138, 0.1);
+  --color-warning: #e8c36a;
+  --color-warning-bg: rgba(232, 195, 106, 0.1);
+  --color-danger: #e07a7a;
+  --color-danger-bg: rgba(224, 122, 122, 0.1);
+  --color-info: #7ab8d4;
+  --color-info-bg: rgba(122, 184, 212, 0.1);
 
-  /* Chart Colors */
-  --chart-1: #6366f1;
-  --chart-2: #a855f7;
-  --chart-3: #ec4899;
-  --chart-4: #f97316;
-  --chart-5: #eab308;
-  --chart-6: #22d3ee;
-  --chart-7: #34d399;
-  --chart-8: #f87171;
-  --chart-9: #818cf8;
-  --chart-10: #c084fc;
+  /* Chart Colors - 暖色系パレット */
+  --chart-1: #e88c7a;
+  --chart-2: #d4956a;
+  --chart-3: #c97b8a;
+  --chart-4: #e8b86a;
+  --chart-5: #b8a060;
+  --chart-6: #7ab8d4;
+  --chart-7: #7dbd8a;
+  --chart-8: #e07a7a;
+  --chart-9: #c4a888;
+  --chart-10: #a89078;
 
   /* Layout */
   --sidebar-width: 260px;
@@ -62,7 +65,7 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);
+  --shadow-glow: 0 0 30px rgba(232, 140, 122, 0.15);
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -233,13 +236,14 @@ body {
 }
 
 .logo-title {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
   background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 
 .logo-subtitle {
@@ -409,9 +413,10 @@ body {
 }
 
 .page-title {
+  font-family: 'Noto Serif JP', serif;
   font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 
 .topbar-right {
@@ -581,9 +586,10 @@ body {
 }
 
 .welcome-card h2 {
+  font-family: 'Noto Serif JP', serif;
   font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   margin-bottom: 12px;
   background: var(--accent-gradient);
   -webkit-background-clip: text;
